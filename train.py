@@ -11,7 +11,7 @@ import torchvision
 
 from nams import *
 
-NAME = 'cars.triplet.fc8.v2'
+NAME = 'cars196.triplet.fc8'
 DESCRIPTION = ''
 
 batch_size = 32
@@ -19,11 +19,11 @@ test_frequency = 1000
 loss_frequency = 100
 
 ###############################################################
-###############################################################
+# Read cars196 dataset
 ###############################################################
 
 dataset_path = '.'
-cars_annos = scipy.io.loadmat('./cars_annos.mat')
+cars_annos = scipy.io.loadmat(dataset_path + '/cars_annos.mat')
 
 train_imgs = []
 test_imgs = []
@@ -103,8 +103,6 @@ def construct_minibatch(all_imgs, all_labels = None, batch_size = None, indices 
         else:
             img = my_resize_image(img, (224, 224), mode=1)
             
-        #data[i,:,:,:] = img.transpose([2, 0, 1]) / 255.0 - 0.5
-        #data[i,:,:,:] = (img.transpose([2, 0, 1]) / 255.0 - 0.45) / 0.22
         img = img / 255.0
         img[:,:,0] = (img[:,:,0] - 0.485) / 0.229
         img[:,:,1] = (img[:,:,1] - 0.456) / 0.224
@@ -117,23 +115,8 @@ def construct_minibatch(all_imgs, all_labels = None, batch_size = None, indices 
         return data
 
 ###############################################################
+# Create network, loss function, optimizer
 ###############################################################
-###############################################################
-
-'''
-x = torchvision.models.vgg16_bn(pretrained=False)
-x = x.features
-x2 = torchvision.models.vgg16_bn(pretrained=False)
-x2 = x2.features
-x3 = []
-for i in range(40):
-  x3.append(x[i])
-x3.append(x2[40])
-x3.append(x2[41])
-x3.append(x2[42])
-x3.append(x2[43])
-x3 = torch.nn.Sequential(*x3)
-'''
 
 net_feature = torchvision.models.vgg16_bn(pretrained=True)
 net_feature.features = torch.nn.Sequential(
@@ -141,10 +124,6 @@ net_feature.features = torch.nn.Sequential(
     torch.nn.MaxPool2d(7)
 )
 net_feature.classifier = torch.nn.Sequential(
-    torch.nn.Linear(512, 512),
-    torch.nn.ReLU(),
-    torch.nn.Linear(512, 512),
-    torch.nn.ReLU(),
     torch.nn.Linear(512, 512)
 )
 myloss = MyTripletLoss(normalize_scale=4.0, learn_scale=True, DBL=True)
@@ -161,19 +140,15 @@ optimizer = torch.optim.SGD(
     lr=0.01, momentum=0.9, weight_decay=5e-4
 )
 
-nams_logger = NamLogger(str(time.time()) + '.' + NAME + '.namslog')
+nams_logger = NamLogger(NAME + '.' +  str(time.time()) + '.namslog')
 nams_logger.log('description', DESCRIPTION)
 
 train_losses = []
 rank1recalls = []
 it = 0
 
-
-
-
-
 ###############################################################
-###############################################################
+# Some functions to do feature extraction & testing
 ###############################################################
 
 def vgg_forward_all(input_var, vgg_model, out_layer = None):
@@ -244,16 +219,16 @@ def perform_all_features_extraction(net, all_imgs, do_normalization=True):
     return all_features
 
 def test_r1_full_all():
+    
+    print 'Perform feature extraction on test set'
     imgs = test_imgs[::1]
     theirlabels = test_labels[::1]
     
-    print 'start'
     net_feature.train(mode=False)
     all_features = perform_all_features_extraction(
         net_feature,
         imgs
     )
-    print 'done'
     r1 = test_retrieval_r1(all_features[0], theirlabels)
     print 'R@1-full-pool4:', r1
     nams_logger.log('R@1-full-pool4', r1, step=it)
@@ -278,6 +253,7 @@ def test_r1_full_all():
         nams_logger.log('R@1-full-fc8', r1, step=it)
     
     
+    print 'Perform feature extraction on train set'
     imgs = train_imgs[::1]
     theirlabels = train_labels[::1]
 
@@ -313,14 +289,13 @@ def test_r1_full_all():
 
 
 ###############################################################
+# Training loop
 ###############################################################
-###############################################################
-
-
 
 tic = time.time()
-for it in range(it, 96666):
+for it in range(it, 99999):
     
+    # learning rate scheduling
     if it < 100:
         optimizer.param_groups[0]['lr'] = 0.00
         optimizer.param_groups[1]['lr'] = 0.01
@@ -365,8 +340,8 @@ for it in range(it, 96666):
         nams_logger.flush()
         tic = time.time()
         
-    if it % (test_frequency) == 0 and True:
-        
+    # save & run test
+    if it % (test_frequency) == 0:
         torch.save({
             'it': it,
             'model': net_feature,
@@ -375,50 +350,6 @@ for it in range(it, 96666):
         }, NAME + '.' + str(it) + '.pth')
         
         test_r1_full_all()
-            
-
-
-
-
-
-
-
-
-
-
-
-
-###############################################################
-###############################################################
-###############################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###############################################################
-###############################################################
-###############################################################
-
-
-
-
-
-
-
-
-
-
 
 
 
