@@ -19,7 +19,16 @@ Run the training: python train.py
 
 ## 
 
-```ptyhon
+```pyhon
+>>> scipy.__version__
+'0.19.1'
 >>> scipy.misc.imresize(np.array([[0, 100, 200]]), [1,6])
 array([[  0,  32,  95, 159, 223, 255]], dtype=uint8)
+```
+
+```pyhon
+>>> scipy.__version__
+'1.0.0'
+>>> scipy.misc.imresize(np.array([[0, 100, 200]]), [1,6])
+array([[  0,   0,  63, 127, 191, 255]], dtype=uint8)
 ```
