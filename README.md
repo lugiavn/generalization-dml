@@ -17,3 +17,9 @@ Edit train.py, update the value of dataset_path
 
 Run the training: python train.py
 
+## 
+
+```ptyhon
+>>> scipy.misc.imresize(np.array([[0, 100, 200]]), [1,6])
+array([[  0,  32,  95, 159, 223, 255]], dtype=uint8)
+```
