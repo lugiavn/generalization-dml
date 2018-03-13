@@ -6,7 +6,7 @@ The code isn't too clean for now, but it should work
 
 ## Prerequisite
 
-Python, pytorch, numpy, etc.
+Python, pytorch, numpy, scipy, etc.
 
 
 ## Produce the result on Cars-196
