@@ -17,7 +17,11 @@ Edit train.py, update the value of dataset_path
 
 Run the training: python train.py
 
-## 
+## Notes
+
+We used pytorch version '0.3.0.post4' and scipy '0.19.1'
+
+We noticed scipy.misc.imresize can behave differently, so using a different version might result in slightly different performance than what's reported in our paper.
 
 ```pyhon
 >>> scipy.__version__
