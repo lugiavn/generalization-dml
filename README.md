@@ -21,7 +21,7 @@ Run the training: python train.py
 
 We used pytorch version '0.3.0.post4' and scipy '0.19.1'
 
-We noticed scipy.misc.imresize can behave differently, so using a different version might result in slightly different performance than what's reported in our paper.
+We noticed scipy.misc.imresize behaviour could vary, so using a different version of scipy might result in slightly different performance than what's reported in our paper.
 
 ```pyhon
 >>> scipy.__version__
