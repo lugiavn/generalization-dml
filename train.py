@@ -11,7 +11,7 @@ import torchvision
 
 from nams import *
 
-NAME = 'cars196.triplet.fc8'
+NAME = 'cars196.triplet.fc6'
 DESCRIPTION = ''
 
 batch_size = 32
@@ -22,7 +22,7 @@ loss_frequency = 100
 # Read cars196 dataset
 ###############################################################
 
-dataset_path = '.'
+dataset_path = '../cars196/'
 cars_annos = scipy.io.loadmat(dataset_path + '/cars_annos.mat')
 
 train_imgs = []
@@ -121,7 +121,8 @@ def construct_minibatch(all_imgs, all_labels = None, batch_size = None, indices 
 net_feature = torchvision.models.vgg16_bn(pretrained=True)
 net_feature.features = torch.nn.Sequential(
     net_feature.features,
-    torch.nn.MaxPool2d(7)
+    torch.nn.MaxPool2d(7),
+    torch.nn.Dropout(p=0.01)
 )
 net_feature.classifier = torch.nn.Sequential(
     torch.nn.Linear(512, 512)
