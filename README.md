@@ -19,7 +19,7 @@ Python, pytorch, numpy, scipy, etc.
 
 ## Produce the result on Cars-196
 
-Download & unzip cars-196 dataset from http://ai.stanford.edu/~jkrause/cars/car_dataset.html
+Download cars-196 dataset from http://ai.stanford.edu/~jkrause/cars/car_dataset.html (cars_annos.mat & unzip car_ims.tgz)
 
 Edit train.py, update the value of dataset_path
 
