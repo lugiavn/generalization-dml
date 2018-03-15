@@ -4,6 +4,14 @@ This reproduces the result from our paper https://arxiv.org/abs/1803.03310
 
 The code isn't too clean for now, but it should work
 
+
+## Benchmarks
+
+Dataset | Cars-196 | CUB-200-2011 | Stanford Online Product
+------------ | ------------- | ------------- | -------------
+**R@1** performance of layer **pool5.3** |  87.8 | 66.4 | 74.8
+
+
 ## Prerequisite
 
 Python, pytorch, numpy, scipy, etc.
@@ -16,6 +24,7 @@ Download & unzip cars-196 dataset from http://ai.stanford.edu/~jkrause/cars/car_
 Edit train.py, update the value of dataset_path
 
 Run the training: python train.py
+
 
 ## Notes
 
