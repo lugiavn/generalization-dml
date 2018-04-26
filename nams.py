@@ -409,6 +409,19 @@ class MyTripletLoss(torch.nn.Module):
         return loss
 
 
+class MyContrastiveLoss(torch.nn.Module):
+    def __init__(self, normalize_scale = 3.0, learn_scale = False):
+        super(MyContrastiveLoss, self).__init__()
+        self.norm_s = float(normalize_scale)
+        if learn_scale:
+            self.norm_s = torch.nn.Parameter(torch.FloatTensor((self.norm_s,)))
+        
+    def forward(self, x, labels):
+        features = self.norm_s * x / torch.norm(x, dim=1, keepdim=True).expand_as(x)
+        loss = MyContrastiveLossFunc()(features, labels)
+        return loss
+
+
 
 
 class MyDistancesFunc(torch.autograd.Function):
