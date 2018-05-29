@@ -389,8 +389,9 @@ class MyTripletLossFunc(torch.autograd.Function):
                 grad_features_np[k,:] += -w * f * (features_np[k,:] - features_np[i,:]) / self.triplet_count
                     
         for i in range(features_np.shape[0]):
-            for k in range(features_np.shape[1]):
-                grad_features[i,k] = float(grad_features_np[i,k])
+            #for k in range(features_np.shape[1]):
+            #   grad_features[i,k] = float(grad_features_np[i,k])
+            grad_features[i,:] = torch.from_numpy(grad_features_np[i,:])
         return grad_features, None
     
 class MyTripletLoss(torch.nn.Module):
