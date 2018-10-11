@@ -301,6 +301,30 @@ class MyContrastiveLossFunc(torch.autograd.Function):
 
 import scipy.stats
 
+
+def pairwise_distances(x, y=None):
+    '''
+    Input: x is a Nxd matrix
+           y is an optional Mxd matirx
+    Output: dist is a NxM matrix where dist[i,j] is the square norm between x[i,:] and y[j,:]
+            if y is not given then use 'y=x'.
+    i.e. dist[i,j] = ||x[i,:]-y[j,:]||^2
+    source: https://discuss.pytorch.org/t/efficient-distance-matrix-computation/9065/2
+    '''
+    x_norm = (x**2).sum(1).view(-1, 1)
+    if y is not None:
+        y_t = torch.transpose(y, 0, 1)
+        y_norm = (y**2).sum(1).view(1, -1)
+    else:
+        y_t = torch.transpose(x, 0, 1)
+        y_norm = x_norm.view(1, -1)
+    
+    dist = x_norm + y_norm - 2.0 * torch.mm(x, y_t)
+    # Ensure diagonal is zero if x=y
+    # if y is None:
+    #     dist = dist - torch.diag(dist.diag)
+    return torch.clamp(dist, 0.0, np.inf)
+
 class MyTripletLossFunc(torch.autograd.Function):
     
     def __init__(self, DBL = True, m = 0.2, triplet_type = 0):
@@ -315,12 +339,16 @@ class MyTripletLossFunc(torch.autograd.Function):
         features_np = features.cpu().numpy()
         labels_np = labels.cpu().numpy()
         
+        # compute distances
         self.distances = np.zeros((features_np.shape[0],features_np.shape[0]))
-        for i in range(features_np.shape[0]):
-            for j in range(features_np.shape[0]):
-                d = np.linalg.norm(features_np[i,:] - features_np[j,:])
-                d = d * d
-                self.distances[i,j] = d
+        if True:
+            self.distances = pairwise_distances(features).cpu().numpy()
+        else:
+            for i in range(features_np.shape[0]):
+                for j in range(features_np.shape[0]):
+                    d = np.linalg.norm(features_np[i,:] - features_np[j,:])
+                    d = d * d
+                    self.distances[i,j] = d
                 
         distance_mean = np.mean(self.distances)
         distance_std = np.std(self.distances)
