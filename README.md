@@ -1,5 +1,7 @@
 # Generalization in Metric Learning: Should the Embedding Layer be the Embedding Layer?
 
+![ZZ](dml.png?raw=true "X")
+
 This reproduces the result from our paper https://arxiv.org/abs/1803.03310
 
 The code isn't too clean for now, but it should work
