@@ -27,6 +27,7 @@ Edit train.py, update the value of dataset_path
 
 Run the training: python train.py
 
+To reproduce result on CUB and OnlineProduct dataset, refer to this https://github.com/lugiavn/generalization-dml/issues/1
 
 ## Notes
 
