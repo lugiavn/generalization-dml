@@ -9,9 +9,15 @@ The code isn't too clean for now, but it should work
 
 ## Benchmarks
 
+**R@1** retrieval performance
+
 Dataset | Cars-196 | CUB-200-2011 | Stanford Online Product
 ------------ | ------------- | ------------- | -------------
-**R@1** performance of layer **pool5.3** |  87.8 | 66.4 | 74.8
+Lifted structure [17] |  53.0 | 47.2 | 62.5
+HDC [40] |  73.7 | 53.6 | 70.9
+N-pair [27] | 71.1 | 51.0 | 67.7
+Proxy-NCA [16] | 73.2 | 49.2 | 73.7
+Our (layer **pool5.3**) |  **87.8** | **66.4** | **74.8**
 
 
 ## Prerequisite
